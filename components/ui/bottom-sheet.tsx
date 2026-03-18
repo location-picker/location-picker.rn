@@ -8,10 +8,11 @@ const SCREEN_HEIGHT = Dimensions.get('window').height
 
 type BottomSheetProps = {
     content: ReactNode
+    isClosing: boolean
     onClose: () => void
 }
 
-export const BottomSheet = ({ content, onClose }: BottomSheetProps) => {
+export const BottomSheet = ({ content, isClosing, onClose }: BottomSheetProps) => {
     const dragY = useSharedValue(SCREEN_HEIGHT)
     const overlayOpacity = useSharedValue(0)
 
@@ -22,6 +23,12 @@ export const BottomSheet = ({ content, onClose }: BottomSheetProps) => {
     const overlayStyle = useAnimatedStyle(() => ({
         opacity: overlayOpacity.value,
     }))
+
+    useEffect(() => {
+        if (isClosing) {
+            closeWithAnimation()
+        }
+    }, [isClosing])
 
     useEffect(() => {
         dragY.value = withTiming(0, { duration: 300 })

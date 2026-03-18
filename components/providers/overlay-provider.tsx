@@ -17,19 +17,25 @@ export const useOverlay = () => {
 
 export const OverlayProvider = ({ children }: { children: ReactNode }) => {
     const [content, setContent] = useState<ReactNode>(null)
+    const [isClosing, setIsClosing] = useState(false)
 
     const open = useCallback((node: ReactNode) => {
         setContent(node)
     }, [])
 
     const close = useCallback(() => {
+        setIsClosing(true)
+    }, [])
+
+    const handleClosed = useCallback(() => {
         setContent(null)
+        setIsClosing(false)
     }, [])
 
     return (
         <OverlayContext.Provider value={{ open, close }}>
             {children}
-            {content && <BottomSheet content={content} onClose={close} />}
+            {content && <BottomSheet content={content} isClosing={isClosing} onClose={handleClosed} />}
         </OverlayContext.Provider>
     )
 }
